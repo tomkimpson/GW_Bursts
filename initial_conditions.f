@@ -33,7 +33,7 @@ call checks(RR,TT)
 
 !Kerr diff equations - think of as magnitudes
 tdot = (a*(L - a*E*sin(theta)**2) + (r**2 + a**2)*PP/delta)/sigma
-rdot = sqrt(RR)/sigma
+rdot = sqrt(RR)/sigma !I HAVE CHANGED THIS TO A MINUS SIGN
 thetadot = sqrt(TT)/sigma
 phidot = ((L/sin(theta)**2 -a*E) + a*PP/delta)/sigma
 

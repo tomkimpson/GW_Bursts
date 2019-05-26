@@ -56,6 +56,7 @@ if (d == 3):
     ax1.set_zlim(-100,100)
 elif (d==2):
     ax1.plot(x,y,c='C0')
+    ax1.scatter(x[0],y[0],c='C4')
     ax2.plot(x,z,c='C1')
     ax1.set_xlabel(r'$ x [\rm r_g]$',fontsize = fs)
     ax2.set_xlabel(r'$ x [\rm r_g]$',fontsize = fs)

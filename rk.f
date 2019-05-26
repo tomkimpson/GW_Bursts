@@ -81,7 +81,9 @@ phi_start =  ystart(4)
 
 !Printeger = 1
 
+!11 do while (y(2) .LT. 1.01*r_init)
 11 do while ( abs(y(4) - phi_start) .LT. FinalPhi) 
+!11 do while ( y(1) .LT. Tobs) 
  
    !Calculate k1 
    CALL derivs(y, dy1)
@@ -177,7 +179,7 @@ endif
      zOUT = mm*cos(y(3))
 
 
-
+ !   print *, Tobs, y(1)
 
    !  PlotDataSet(PlotK,1) = xOUT
    !  PlotDataSet(PlotK,2) = !yOUT

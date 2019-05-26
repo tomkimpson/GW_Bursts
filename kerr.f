@@ -47,7 +47,7 @@ timescale = (rp/vc)/convert_s !critical timescale in seconds
 
 !Calculate initial EQL
 if (circular .EQ. 1) then
-  r_init = 6.0_dp
+  r_init = 8.0_dp
   call EQL_circular()
 elseif (circular .EQ. 0) then  
   call EQL_eccentric(rp,ra,theta_min)

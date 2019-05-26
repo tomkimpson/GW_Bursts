@@ -6,14 +6,13 @@ import glob
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.signal import argrelextrema
-
+import scipy
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 #SEt up plotting environment
 fig = plt.figure(figsize=(20,10))
 ax1 = plt.subplot2grid((1,2), (0,0))
 ax2 = plt.subplot2grid((1,2), (0,1))
-
 #Load data
 
 MPDfile = '/unsafe/tok2/GravWaves/Trajectory.txt'
@@ -35,15 +34,23 @@ hcross = data1[:,5]
 
 
 
-Rate = 1
+print (len(hplus))
+
+
+
+#fs = 2.0#sampling frequency
+#dt = 1/fs
+
+Rate = 30
 
 n = Rate*len(t)
 t1 = np.linspace(t[0],t[-1],n)
+#t1 = np.arange(t[0],t[-1],dt)
 hplus = np.interp(t1,t,hplus)
 hcross= np.interp(t1,t,hcross)
 
 
-
+print (len(hplus))
 
 
 
@@ -54,12 +61,27 @@ print ('dt = ', (dt))
 print ('Sampling frequency = ', (1/dt))
 
 
+
+
 #Calculate the FT
 hplusT = dt*np.fft.rfft(hplus)
 hcrossT = dt*np.fft.rfft(hcross)
 
+
+
+print ('Got the FT')
+
+
+
+
 #Get the frequencies
 f = np.fft.rfftfreq(len(hplus), dt)
+
+
+
+print ('Frequency range:', f[0], ' - ', f[-1])
+
+
 df = f[1] - f[0] #arethe frequencies evelyspaces?
 
 
@@ -123,6 +145,28 @@ S = Pn/R + Sc
 
 
 h = hplusT + hcrossT
+
+
+theta = np.pi/2
+phi = 0.0
+psi = 0.0
+
+
+
+F1P = 0.5*(1 + np.cos(theta)**2)*(np.cos((2*phi)))*(np.cos(2*psi)) - (np.cos(theta))*(np.sin(2*phi)*np.sin(2*phi))
+F1X = 0.5*(1 + np.cos(theta)**2)*(np.cos((2*phi)))*(np.sin(2*psi)) + (np.cos(theta))*(np.sin(2*phi)*np.cos(2*phi))
+
+F2P = 0.5*(1 + np.cos(theta)**2)*(np.sin((2*phi)))*(np.cos(2*psi)) + (np.cos(theta))*(np.cos(2*phi)*np.sin(2*phi))
+F2X = 0.5*(1 + np.cos(theta)**2)*(np.sin((2*phi)))*(np.sin(2*psi)) - (np.cos(theta))*(np.cos(2*phi)*np.sin(2*phi))
+
+
+
+h1 = np.sqrt(3)*(F1P * hplusT +F1X*hcrossT)/2
+h2 = np.sqrt(3)*(F2P * hplusT +F2X*hcrossT)/2
+
+h = h1 + 1j*h2
+
+
 hS = np.conj(h)
 
 
@@ -132,20 +176,22 @@ SNR = np.sqrt(SNR2)
 
 print ('The calculated SNR = ', SNR)
 
+print ('Alternative summation method')
+SNR2 = 2*scipy.integrate.simps((hS*h + h*hS)/S , f)
 
+SNR = np.sqrt(SNR2)
 
-'''
-ax2.scatter(f,htilde1)
-ax2.scatter(f,htilde2)
+print ('The calculated SNR = ', SNR)
+
+ax2.plot(f,h)
 ax2.loglog(f,np.sqrt(f*S))
 ax2.set_xlim(1.0e-6,1.0e0)
 ax2.set_ylim(1e-22,1.0e-13)
-'''
 
 
 
 
-
+#plt.show()
 
 
 
