@@ -82,8 +82,8 @@ phi_start =  ystart(4)
 !Printeger = 1
 
 !11 do while (y(2) .LT. 1.01*r_init)
-11 do while ( abs(y(4) - phi_start) .LT. FinalPhi) 
-!11 do while ( y(1) .LT. Tobs) 
+!11 do while ( abs(y(4) - phi_start) .LT. FinalPhi) 
+11 do while ( y(1) .LT. Tobs) 
  
    !Calculate k1 
    CALL derivs(y, dy1)
@@ -178,8 +178,8 @@ endif
      yOUT = mm*sin(y(3))*sin(y(4))
      zOUT = mm*cos(y(3))
 
-
- !   print *, Tobs, y(1)
+    !print *, (y(1)/convert_s)/1d6
+    !print *, Tobs, y(1)
 
    !  PlotDataSet(PlotK,1) = xOUT
    !  PlotDataSet(PlotK,2) = !yOUT
@@ -187,6 +187,10 @@ endif
      
      !PlotDataSet(PlotK,4) = harray(1) !* OBSR/m0
      !PlotDataSet(PlotK,5) = harray(2)
+
+
+
+
 
      if (PlotK .EQ. 1) then
      !print *, y(1),m0*xOUT*xOUT, m0*yOUT*yOUT,m0*zOUT*zOUT, m0*xOUT*yOUT, m0*xOUT*zOUT, m0*yOUT*zOUT
@@ -390,7 +394,8 @@ open (14, file = PLOToutfile, status='replace',action='write')
 do j = 1,N
 write(14,*) Cartesian(j,1), Cartesian(j,2), Cartesian(j,3), &
             AllData(j,1)/convert_s, hOUT(j,1), hOUT(j,2), &
-            hOUT(j,1)*OBSR/m0, hOUT(j,2)*OBSR/m0
+            hOUT(j,1)*OBSR/m0, hOUT(j,2)*OBSR/m0, &
+            AllData(j,2), timescale
 enddo
 close(14)
 

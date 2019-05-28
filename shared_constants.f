@@ -25,14 +25,14 @@ real(kind=dp), PARAMETER :: au = 1.496d11 !AU in meters
 
 !!!!---------System parameters which can be changed-------------!!!!!!!!!
 !BH
-real(kind=dp), PARAMETER :: MBH = 4.30D6!Solar masses
-real(kind=dp), PARAMETER :: a = 0.120_dp !BH spin parameter
+real(kind=dp), PARAMETER :: MBH = 4.10D6!Solar masses
+real(kind=dp), PARAMETER :: a = 0.60_dp !BH spin parameter
 real(kind=dp), PARAMETER :: Rhor = 1.0_dp+sqrt(1.0_dp-a**2) + 1d-2 !Horizon + eps
 real(kind=dp), PARAMETER :: mu = Newton_g*MBH*Msun !m^3 s^-2
 !PSR
-real(kind=dp), PARAMETER :: MPSR = 10.0_dp !Solar masses
+real(kind=dp), PARAMETER :: MPSR = 1.0_dp !Solar masses
 real(kind=dp), PARAMETER :: RPSR = 1d4 !m
-real(kind=dp), PARAMETER :: p0 = 1.00_dp !pulsar period in milliseconds
+real(kind=dp), PARAMETER :: p0 = 10000.00_dp !pulsar period in milliseconds
 
 
 !Misc
@@ -43,7 +43,7 @@ real(kind=dp), parameter :: r0 = RPSR*convert_m !Pulsar radius in geo units
 
 
 !Orbit
-real(kind=dp), PARAMETER :: ecc = 0.9990_dp
+real(kind=dp), PARAMETER :: ecc = 0.90_dp
 
 
 
@@ -51,39 +51,29 @@ real(kind=dp), PARAMETER :: ecc = 0.9990_dp
 
 !IF SPECIFY RP
 
-real(kind=dp), parameter :: rp = 15.60_dp
+real(kind=dp), parameter :: rp =15.60_dp
 real(kind=dp), parameter :: semi_latus = rp * (1.0_dp + ecc)
 real(kind=dp),PARAMETER :: ra = semi_latus/(1.0_dp - ecc)
-
-!real(kind=dp) :: r_init = (ra+rp)/2.0_dp
-real(kind=dp) :: r_init = rp * 5.20_dp !(ra+rp)/2.0_dp
+real(kind=dp) :: r_init = rp * 5.200_dp !For fig 1
 real(kind=dp), parameter :: semi_major = semi_latus/(1.0_dp - ecc**2.0_dp)
 
 
 ! IF SPECIFY ORBITAL PERIOD
 
-!real(kind=dp), PARAMETER :: periodKepler = 0.260_dp !Keplerian period in years
+!real(kind=dp), PARAMETER :: periodKepler = 0.10_dp !Keplerian period in years
 !real(kind=dp), PARAMETER :: periodKeplerSec = periodKepler *365.0_dp*24.0_dp*3600.0_dp !in seconds
 !real(kind=dp), PARAMETER :: semi_major = convert_m * (periodKeplerSec**2 * Newton_g*MBH*Msun / (4.0_dp*PI**2.0_dp))**(1.0_dp/3.0_dp)
 
 
 !real(kind=dp),PARAMETER :: semi_latus = semi_major*(1.0_dp - ecc**2.0_dp)
-
-
-
 !real(kind=dp),PARAMETER :: ra = semi_latus/(1.0_dp - ecc)
 !real(kind=dp),PARAMETER :: rp = semi_latus/(1.0_dp + ecc)
-
-!real(kind=dp) :: r_init = semi_major
-
+!real(kind=dp) :: r_init = 10*rp !semi_major
 
 
-real(kind=dp), PARAMETER :: BigTheta = 2.1_dp !This is i from Babak, Fang etc
+
+real(kind=dp), PARAMETER :: BigTheta = 2.10_dp !This is i from Babak, Fang etc
 real(kind=dp), PARAMETER :: theta_min = (90.0_dp - BigTheta) * PI/180.0_dp !Minimum latitude reached by PSR
-
-
-
-
 
 
 
@@ -91,7 +81,7 @@ real(kind=dp), PARAMETER :: theta_min = (90.0_dp - BigTheta) * PI/180.0_dp !Mini
 
 real(kind=dp), PARAMETER :: sigma = 0.00_dp !orbital inclination w.r.t y-axis
 real(kind=dp), PARAMETER  :: theta_init = sigma+PI/2.0_dp
-real(kind=dp), PARAMETER :: phi_init = 0.0_dp
+real(kind=dp), PARAMETER :: phi_init = 0.0_dp !0.0_dp!PI/4.0_dp !0.0_dp
 !Components of rieman tensor
 
 
@@ -102,10 +92,10 @@ real(kind=dp), PARAMETER :: I = 0.40_dp*(MPSR*Msun)*RPSR**2 !moment of inertia
 real(kind=dp), PARAMETER :: spin_factor = light_c/(Newton_g*(MBH*Msun)**2)
 real(kind=dp), PARAMETER :: s0 = spin_factor*I*2*PI/(p0*1.0d-3) !S = I omega
 
-INTEGER(kind=dp), PARAMETER :: circular = 0 !On/Off 1 = circular, 0= eccentric
+INTEGER(kind=dp), PARAMETER :: circular = 1 !On/Off 1 = circular, 0= eccentric
 real(kind=dp), PARAMETER :: xi = PI/2.0_dp, eta = PI/2.0_dp 
 real(kind=dp), PARAMETER :: phi = PI/4.0_dp !0.0_dp !0.0_dp !Think of as (st,sx,sz,sy)
-real(kind=dp), PARAMETER :: lambda = 1.00_DP
+real(kind=dp), PARAMETER :: lambda = 0.00_DP
 real(kind=dp), PARAMETER :: stheta = PI/ 4.0_dp 
 real(kind=dp), PARAMETER :: sphi = PI/ 4.0_dp 
 
@@ -123,7 +113,7 @@ real(kind=dp), parameter :: integration_time = 1.0_dp !seconds
 real(kind=dp), parameter :: fine_resolution =  1.0_dp !seconds
 real(kind=dp), parameter :: coarse_resolution =  100.0_dp !seconds
 real(kind=dp), parameter :: h_s = coarse_resolution
-real(kind=dp), parameter :: escal = 1.0d20
+real(kind=dp), parameter :: escal = 1.0d21
 real(kind=dp), parameter :: S = 0.90_dp
 real(kind=dp), parameter :: Pgrow = -0.20_dp
 real(kind=dp), parameter :: Pshrink = -0.250_dp
