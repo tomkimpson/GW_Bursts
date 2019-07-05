@@ -41,9 +41,15 @@ real(kind=dp), dimension(:,:), allocatable :: ITensor, hOUT, hOUT2, hOUT3
 real(kind=dp), dimension(:,:), allocatable :: IDerivs, SDerivs1, Sderivs2, SDerivs3
 real(kind=dp), dimension(:,:), allocatable :: MDerivs1, Mderivs2, MDerivs3
 real(kind=dp), dimension(:,:), allocatable :: MTot, STot,TTot
+
+
+real(kind=dp), dimension(:,:), allocatable :: IDerivs3, MDerivs4a, MDerivs4b,Mderivs4c
+real(kind=dp), dimension(:), allocatable :: Edot, Lx, Ly, Lz
+
+
 real(kind=dp), dimension(:), allocatable :: PlayIn, PlayOut
 integer(kind=dp) :: order
-real(kind=dp) :: Etest, Ntest
+real(kind=dp) :: Etest, Ntest, Edot_Kep, Ldot_Kep
 
 !Create massive array for storing output
 PlotRows = 1e8
@@ -87,7 +93,7 @@ phi_start =  ystart(4)
 11 do while ( abs(y(4) - phi_start) .LT. FinalPhi) 
 !11 do while ( y(1) .LT. Tobs) 
  
- !   print *, abs(y(4) - phi_start), FinalPhi
+ !  print *, abs(y(4) - phi_start), FinalPhi
 
 
 
@@ -312,9 +318,16 @@ INERTIA(:,6) = m0*Cartesian(:,1)*Cartesian(:,3) !xz
 INERTIA(:,7) = m0*Cartesian(:,2)*Cartesian(:,3) !yz
 
 ALLOCATE(IDerivs(N,Nc-1))
-
 order = 2
 call FiniteDifference(N,Nc, INERTIA,IDerivs,order)
+
+
+
+
+
+
+
+
 
 
 
@@ -416,6 +429,8 @@ call GW2(N,TTot,hOUT)
 
 
 OBSTheta = PI/4.0_dp
+OBSTheta = -72.0_dp * PI/180.0_dp !for 47 tuc
+
 ALLOCATE(hOUT2(N,2))
 call GW2(N,TTot,hOUT2)
 
@@ -425,9 +440,82 @@ ALLOCATE(hOUT3(N,2))
 call GW2(N,TTot,hOUT3)
 
 
+
+
+
+
+!Now calculate energy and momentum fluxes
+
+
+!IDERIVS
+ALLOCATE(IDerivs3(N,Nc-1))
+order = 3
+call FiniteDifference(N,Nc, INERTIA,IDerivs3,order)
+
+
+
+ALLOCATE(Edot(N))
+
+
+
+do j=1,N
+Edot(j) = 0.50_dp * (IDerivs3(j,2)*IDerivs3(j,2) + &
+                    IDerivs3(j,3)*IDerivs3(j,3) + &
+                    IDerivs3(j,4)*IDerivs3(j,4) + &
+                     2.0_dp*(IDerivs3(j,5) *IDerivs3(j,5)) + &
+                     2.0_dp*(IDerivs3(j,6) *IDerivs3(j,6)) + &
+                     2.0_dp*(IDerivs3(j,7) *IDerivs3(j,7)))
+enddo
+
+
+
+
+
+
+ALLOCATE(Lx(N))
+ALLOCATE(Ly(N))
+ALLOCATE(Lz(N))
+
+
+
+do j=1,N
+
+Lx(j) = IDerivs(j,5)*IDerivs3(j,6) + IDerivs(j,3)*IDerivs3(j,7) + IDerivs(j,7)*IDerivs(j,4) &
+        -(IDerivs(j,6)*IDerivs3(j,5) + IDerivs(j,7)*IDerivs3(j,3) + IDerivs(j,4)*IDerivs(j,7))
+
+
+
+Ly(j) = IDerivs(j,6)*IDerivs3(j,1) + IDerivs(j,7)*IDerivs3(j,5) + IDerivs(j,4)*IDerivs(j,6) &
+        -(IDerivs(j,1)*IDerivs3(j,6) + IDerivs(j,5)*IDerivs3(j,6) + IDerivs(j,6)*IDerivs(j,4))
+
+
+Lz(j) = IDerivs(j,1)*IDerivs3(j,5) + IDerivs(j,5)*IDerivs3(j,2) + IDerivs(j,6)*IDerivs(j,7) &
+        -(IDerivs(j,5)*IDerivs3(j,1) + IDerivs(j,2)*IDerivs3(j,5) + IDerivs(j,7)*IDerivs(j,6))
+
+
+enddo
+
+
+
+
+
+
+
+
+
+
 !Save output into one file 
 
+Edot_Kep = 32.0_dp/5.0_dp * (m0) * ((1.0_dp-ecc)**(3.0_dp/2.0_dp) / (1.0_dp+ecc)**(7.0_dp/2.0_dp)) * &
+                  (1.0_dp * 73.0_dp*ecc**2/24.0_dp + 37.0_dp*ecc**4.0_dp/96.0_dp)*rp**(-5.0_dp)
 
+
+Ldot_Kep = 32.0_dp/5.0_dp * (m0) * ((1.0_dp-ecc)**(3.0_dp/2.0_dp) / (1.0_dp+ecc)**(2.0_dp)) * &
+                  (1.0_dp + 7.0_dp*ecc**2.0_dp/8.0_dp)*rp**(-7.0_dp/2.0_dp)
+
+
+
+!
 !For plotting the trajectory
 open (14, file = PLOToutfile, status='replace',action='write')
 do j = 1,N
@@ -437,12 +525,13 @@ write(14,*) Cartesian(j,1), Cartesian(j,2), Cartesian(j,3), & !x, y ,z
             hOUT2(j,1)*OBSR/m0, hOUT2(j,2)*OBSR/m0, & !h+, hx
             hOUT3(j,1)*OBSR/m0, hOUT3(j,2)*OBSR/m0, & !h+, hx 
             AllData(j,2), timescale, AllData(j,4), OBSR/m0, &
-            Tobs/convert_s
+            Tobs/convert_s, Edot(j), Edot_Kep, Lx(j), Ly(j), Lz(j), Ldot_Kep, &
+            hOUT3(j,1)*OBSR, OBSR, convert_s
+            
 enddo
 close(14)
 
 
-print *,'FinalTime = ', AllData(N,1), Tobs
 
 
 

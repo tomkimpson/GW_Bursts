@@ -23,7 +23,7 @@ real(kind=dp) :: FinalPhi,r_circ
 CALL GET_COMMAND_ARGUMENT(1,r_circ_str)
 read(r_circ_str, '(f32.16)') r_circ !Read in eccentricity  
 print *, 'Periapsis approach:', rp
-
+print *, 'Period:', periodKepler * 365.0_dp , ' days'
 
 
 
@@ -72,11 +72,9 @@ endif
 
 
 !Set initial conditions
-print *, 'start IC'
 call init_cond(S0_init,S1_init, S2_init, S3_init,P0_init, P1_init, P2_init,P3_init)
 
 
-print *, r_init
 
 
 
@@ -94,7 +92,6 @@ Y_init(10) = S1_init
 Y_init(11) = S2_init
 Y_init(12) = S3_init
 
-print *, 'START RK'
 
 !Run the RK integrator
 call rk(Y_init,yy,N_step,t_final)

@@ -43,8 +43,6 @@ real(kind=dp) kappa,eps,rho,et,sig
 real(kind=dp) E_top, E_bot,DD
 
 
-print *, rp, ra,theta
-
 if (a .LT. 0) then
 DD = -1.0_dp
 else
@@ -53,7 +51,16 @@ endif
 
 
 
+
+
+
+
+
 z = cos(theta)**2
+
+
+
+print *, ra, rp, z
 
 
 call func_f(rp,a,z,f1)
@@ -80,8 +87,11 @@ L = -g1*E/h1 + DD*(g1**2*E**2+(f1*E**2-d1)*h1)**0.5/h1
 Q = z*(a**2*(1-E**2)+L**2/(1.0_dp-z))
 
 
-
+print *, 'E,L,Q = ', E, L, Q
 print *, 'Inclination angle i = ', atan(sqrt(Q)/L) * 180.0_dp/PI
+
+stop
+
 
 END SUBROUTINE EQL_eccentric
 

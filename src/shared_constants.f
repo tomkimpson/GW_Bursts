@@ -26,6 +26,7 @@ real(kind=dp), PARAMETER :: au = 1.496d11 !AU in meters
 !!!!---------System parameters which can be changed-------------!!!!!!!!!
 !BH
 real(kind=dp), PARAMETER :: MBH = 4.310D6!Solar masses
+!real(kind=dp), PARAMETER :: MBH = 2.2310D3!Solar masses
 real(kind=dp), PARAMETER :: a = 0.60_dp !BH spin parameter
 real(kind=dp), PARAMETER :: Rhor = 1.0_dp+sqrt(1.0_dp-a**2) + 1d-2 !Horizon + eps
 real(kind=dp), PARAMETER :: mu = Newton_g*MBH*Msun !m^3 s^-2
@@ -95,7 +96,7 @@ real(kind=dp), PARAMETER :: s0 = spin_factor*I*2*PI/(p0*1.0d-3) !S = I omega
 INTEGER(kind=dp), PARAMETER :: circular = 0 !On/Off 1 = circular, 0= eccentric
 real(kind=dp), PARAMETER :: xi = PI/4.0_dp, eta = PI/2.0_dp !0.0_dp !PI/2.0_dp 
 !real(kind=dp), PARAMETER :: phi = PI/4.0_dp !0.0_dp !0.0_dp !Think of as (st,sx,sz,sy)
-real(kind=dp), PARAMETER :: lambda = 0.00_DP
+real(kind=dp), PARAMETER :: lambda = 1.00_DP
 real(kind=dp), PARAMETER :: stheta = PI/ 4.0_dp 
 real(kind=dp), PARAMETER :: sphi = PI/ 4.0_dp 
 
@@ -146,11 +147,13 @@ character(len=200) :: DATAoutfile = '/unsafe/tok2/GravWaves/Trajectory.dat'
 !Observer Location - for setting the wave forms
 real(kind=dp) :: OBSTheta != 0.0_dp !PI/2.0_dp !0.0_dp !PI/2.0_dp !p !PI/4.0_dp !PI/2.0_dp
 real(kind=dp) :: OBSPhi = 0.0_dp
+!real(kind=dp) :: OBSR = 4.0d3 * pc * convert_m !Distance to BH in rg
+!real(kind=dp) :: OBSR = 763.0d3 * pc * convert_m !Distance to BH in rg
 real(kind=dp) :: OBSR = 8.330d3 * pc * convert_m !Distance to BH in rg
 real(kind=dp), dimension(3) :: Nvector
 real(kind=dp),parameter :: Tobs = 11.570_dp * 24.0_dp * 3600.0_dp * convert_s
 !Observation time. first numebr is days
-
+!
 !!!!!!!!!!!!!!!!!!-----------GLOBALS-----------!!!!!!!!!!!!!!!!!
 
 real(kind=dp) :: FundFreq,timescale,vc

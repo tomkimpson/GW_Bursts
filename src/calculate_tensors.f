@@ -360,7 +360,7 @@ hyz = hyzB
 
 
 
-print *, hxxB(1), hyyB(1), hzzB(1), hxxB(1) + hyyB(1) + hzzB(1)
+!print *, hxxB(1), hyyB(1), hzzB(1), hxxB(1) + hyyB(1) + hzzB(1)
 
 !STOP
 
