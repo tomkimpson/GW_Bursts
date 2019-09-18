@@ -7,10 +7,10 @@ use tensors
 
 implicit none
 
-private derivs
+private 
 
 
-public RKF
+public RKF, derivs
 
 contains
 
@@ -92,7 +92,7 @@ real(kind=dp), dimension(size(yIN)) :: deltaErr, yscal, ratio
 real(kind=dp) :: errmax
 
 
-
+11 continue
 
 ! Y1
 y1 = yIN
@@ -147,6 +147,7 @@ if (errmax .GT. 1.0_dp) then
 !This is not good. Do not update yOUT and reduce the stepsize
 call ShrinkStepsize(errmax)
 yOUT = yIN
+goto 11
 else
 !This is good. Update yOUT and try to increase the stepsize a little bit
 call GrowStepsize(errmax)
