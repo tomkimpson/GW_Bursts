@@ -37,13 +37,14 @@ rp = semi_latus/(1.0_dp + eccentricity)
 !Declare savefiles
 write(LamStr,'(F10.2)') lambda
 
-call get_environment_variable("SCDir", PathOut)
+call get_environment_variable("GWDir", PathOut)
 
 
 Fname = 'data_lambda='//trim(adjustl(LamStr))
 BinaryData = trim(adjustl(PathOut))//&
              trim(adjustl(Fname))//&
              '.dat'
+
 
 PlotData = trim(adjustl(PathOut))//&
              trim(adjustl(Fname))//&

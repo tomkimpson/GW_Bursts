@@ -5,7 +5,7 @@ import sys
 import glob
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.mplot3d import Axes3D
-
+import os
 
 
 
@@ -26,7 +26,16 @@ elif  (d == 2):
 
 
 #Load data
-data = np.loadtxt('/Users/tomkimpson/tempData/Plot_data.txt')
+
+
+path = os.environ["GWDir"]
+
+
+
+files = glob.glob(path+'*.txt')
+
+fileA = files[0]
+data = np.loadtxt(fileA)
 
 t = data[:,0]
 x = data[:,1]

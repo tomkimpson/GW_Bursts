@@ -3,6 +3,7 @@ module rungekutta
 use parameters
 use constants
 use derivatives
+use GravWaves
 
 implicit none
 
@@ -48,11 +49,19 @@ do while ( abs( y(4) - y0(4)) .LT. N_orbit*2.0_dp*PI)
     !Save the output
     i = i + 1
     AllData(i,:) = y
+
+
+
+
+
+
+
 enddo
 
 
 
 
+    call calc_GW()
 
 
 print *, 'Runge Kutta completed. Start data I/O'

@@ -59,7 +59,8 @@ Y_init(5:8) = PVector
 Y_init(9:12) = SVector
 
 
-
+print *, 'Initial conditions set.'
+print *, 'Starting rk solver'
 call rk(Y_init)
 
 print *, 'Code completed'
