@@ -94,19 +94,25 @@ real(kind=dp) :: errmax
 
 11 continue
 
+
+
 ! Y1
 y1 = yIN
 call derivs(y1,dy1)
+
 k1 = h * dy1
+
+
 
 
 
 !Y2
 y2 = y1 + B21*k1
+
+
+
 call derivs(y2,dy2)
 k2 = h * dy2
-
-
 
 !Y3
 y3 = y1 + B31*k1 + B32*k2
@@ -132,9 +138,18 @@ call derivs(y6,dy6)
 k6 = h * dy6
 
 
+!print *, 'K6 = ', k6(1), h, dy6(1)
+
+
 !Update
 ynew = y1 + c1*k1  + c3*k3 + c4*k4  +c6*k6 
 yerr = y1 + cbar1*k1 + cbar3*k3 + cbar4*k4 + cbar5*k5 + cbar6*k6
+
+
+!print *, 'ynew', ynew(1), y1(1) , c1*k1(1)  , c3*k3(1) , c4*k4(1)  ,c6*k6(1) 
+!print *, cbar6*k6(1),cbar6, k6(1)
+!print *,'yerr:', y1(1),cbar1*k1(1), cbar3*k3(1), cbar4*k4(1),cbar5*k5(1), cbar6*k6(1)
+!stop
 
 
 deltaErr = abs(ynew - yerr)
@@ -143,13 +158,34 @@ ratio = deltaErr/yscal
 errmax = escal * maxval(ratio)
 
 
+!print *, ratio(1), ynew(1),yerr(1), yscal(1)
+
+
+
+
+
+!print *, ratio(1:4)
+!print *, ratio(5:8)
+!print *, ratio(9:12)
+
+
+
+
+
+
+
+
+
+
 if (errmax .GT. 1.0_dp) then
 !This is not good. Do not update yOUT and reduce the stepsize
+print *,'shrink'
 call ShrinkStepsize(errmax)
 yOUT = yIN
 goto 11
 else
 !This is good. Update yOUT and try to increase the stepsize a little bit
+print *, 'grow'
 call GrowStepsize(errmax)
 yOUT = ynew
 endif

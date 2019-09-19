@@ -121,6 +121,22 @@ PVector(4) = m0*((L/sin(theta)**2 - a*E) + a*PP/delta)/sigma
 
 
 
+
+
+!print *, 'P3_init=', PVector(4), m0,((L/sin(theta)**2 - a*E) + a*PP/delta)/sigma, &
+!m0 *((L/sin(theta)**2 - a*E) + a*PP/delta)/sigma
+!stop
+
+
+
+
+
+!print *, 'P4 = ', m0 , ((L/sin(theta)**2 - a*E) + a*PP/delta)/sigma ,m0*((L/sin(theta)**2 - a*E) + a*PP/delta)/sigma
+!stop
+
+
+
+
 !Do we need to account for the oreintation of the initial momentum here?
 !PVector(2) = PVector(2) * cos(PI/2.0_dp)
 !PVector(4) = PVector(4) * sin(PI/2.0_dp)
@@ -251,6 +267,11 @@ L = L1 + DD*sqrt(L2)/h1
 !And finally the Carter constant
 
 Q = zMinus * (a**2.0_dp * (1.0_dp - E**2.0_dp) + L**2.0_dp/(1.0_dp-zMinus))
+
+
+
+
+
 
 end subroutine calculate_EQL
 

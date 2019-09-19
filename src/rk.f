@@ -27,7 +27,7 @@ real(kind=dp), dimension(size(y0)) :: y, y1, dy
 !However this does require more exploration
 !see https://stackoverflow.com/questions/8384406/how-to-increase-array-size-on-the-fly-in-fortran
 real(kind=dp), dimension(nrows,size(y0)+3) :: AllData !Big array to save all data
-real(kind=dp), dimension(:,:),allocatable :: output !smaller array which will be outout
+real(kind=dp), dimension(:,:),allocatable :: output, waveforms !smaller array which will be outout
 integer(kind=dp) :: i,j !index for saving to array
 real(kind=dp) :: mm, xC, yC, zC !Cartesian components
 
@@ -42,10 +42,18 @@ AllData(i,1:entries) = y
 
 !Integrate
 !do while (y(1) .LT. 1.0_dp)
-do while ( abs( y(4) - y0(4)) .LT. N_orbit*2.0_dp*PI)    
+!do while ( abs( y(4) - y0(4)) .LT. N_orbit*2.0_dp*PI)    
+
+!do while (i .LT. 5)
+
+do while (i .LT. 10)
+
    call RKF(y,y1)
     y = y1
-    
+ 
+
+    print *, i, y(1), h
+   
 
    !Also calculate the rdot, thetadot, phidot
    call derivs(y,dy)
@@ -72,10 +80,12 @@ print *, 'Runge Kutta completed. Start data I/O'
 
 !First reallocate to create a smaller array
 allocate(output(i,entries+3))
+allocate(waveforms(i,2))
+
 output = AllData(1:i, :)
 
 
-    call calc_GW(i,output)
+    call calc_GW(i,output,waveforms)
 
 
 
@@ -99,7 +109,7 @@ if (plot .EQ. 1) then
     xC = mm * sin(output(j,3)) * cos(output(j,4))
     yC = mm * sin(output(j,3)) * sin(output(j,4))
     zC = mm * cos(output(j,3)) 
-    write(20, *) output(j,1), xC, yC, zC
+    write(20, *) output(j,1), xC, yC, zC, waveforms(j,1), waveforms(j,2)
     endif
     enddo
     close(20)

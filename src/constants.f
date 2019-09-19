@@ -17,7 +17,7 @@ real(kind=dp), parameter :: light_c = 3.0d8
 real(kind=dp), parameter :: convert_m = light_c**2/(Newton_g*MBH*Msolar) !Multiply by this to go TO Natural units
 real(kind=dp), parameter :: convert_s = light_c**3/(Newton_g*MBH*Msolar) !Multiply by this to go TO Natural units
 real(kind=dp), parameter :: convert_spin= light_c/(Newton_g*(MBH*Msolar)**2.0_dp) !Multiply by this to go TO Natural units
-
+real(kind=dp), parameter :: pc = 3.086e16 !parsec in meters
 
 
 
@@ -55,15 +55,20 @@ real(kind=dp) :: r_init != rp !initial conditions of particle. Starts at periaps
 
 real(kind=dp), parameter :: theta_min = (90.0_dp - iota) * PI/180.0_dp !Minimum latitude reached in radians
 real(kind=dp), parameter :: theta_init = PI/2.0_dp !initial conditions
-real(kind=dp), parameter :: phi_init = 0.0_dp !initial conditions
+real(kind=dp), parameter :: phi_init = PI !initial conditions
 real(kind=dp), parameter :: t_init = 0.0_dp !initial conditions_
 real(kind=dp), parameter :: zMinus = cos(theta_min)**2.0_dp
-real(kind=dp), parameter :: inertia = 0.40_dp*(MPSR*Msolar)*(RPSR*1.0d3)**2.0_dp !SI units
+real(kind=dp), parameter :: inertia = 0.40_dp*(MPSR*Msolar)*(RPSR*1.0e3_dp)**2 !SI units
 real(kind=dp), parameter :: s0 = convert_spin*2.0_dp*PI*inertia/p0 !magnitude of spin spatial vector in natural units
 real(kind=dp), parameter :: stheta = PI/4.0_dp, sphi = PI/4.0_dp !alignment of spin axis in tetrad frame
 real(kind=dp), parameter :: m0 = MPSR/MBH !Mass ratio
 integer(kind=dp), parameter :: entries = 12 !Number of differetnai eqns 4x(position,spin,momentum)
 real(kind=dp), parameter :: FinalPhi = 2.0_dp*PI*N_orbit !The final phi after all the orbits
+
+
+
+real(kind=dp), parameter :: OBSR = observer_distance*pc*convert_m !rg
+
 
 !Integration constants
 real(kind=dp) :: h =1.0d-1 !Initial stepsize. This will be varied by RKF so it is not a parameter 

@@ -41,6 +41,19 @@ SVector(4) = s0*sin(stheta)*sin(sphi)/(r_init*sin(theta_init)) !S3
 
 
 
+!print *, s0 , convert_spin, convert_spin*2.0_dp*PI*inertia/p0
+
+
+
+
+
+
+
+
+
+
+!print *,Svector(3), s0, stheta, r_init
+
 
 !Calculate the remaining initial conditions
 
@@ -59,6 +72,16 @@ Y_init(5:8) = PVector
 Y_init(9:12) = SVector
 
 
+
+
+
+
+print *, Y_init(1:4)
+print *, Y_init(5:8)
+print *, Y_init(9:12)
+h = 0.10_dp*convert_s
+
+print *, h
 print *, 'Initial conditions set.'
 print *, 'Starting rk solver'
 call rk(Y_init)

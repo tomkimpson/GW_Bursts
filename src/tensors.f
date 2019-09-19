@@ -831,6 +831,15 @@ Xprime(4) = - (P3 + lambda*RPS_3/Delta)/m0**2
 
 
 
+
+
+
+
+
+
+
+
+
 call magnitude(metric,Xprime,Vsq)
 
 
@@ -843,7 +852,12 @@ Vsq = g00*Xprime(1)**2 + g11*Xprime(2)**2 + g22*Xprime(3)**2 + g33*Xprime(4)**2 
 PV = -sqrt(-1.0_dp/Vsq)
 
 
+
+
+
+
 Xprime = Xprime * PV
+
 
 
 

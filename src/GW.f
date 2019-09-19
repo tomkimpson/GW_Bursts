@@ -17,17 +17,20 @@ contains
 
 
 
-subroutine calc_GW(nrows,output)
+subroutine calc_GW(nrows,output, hout)
 !Arguments
 integer(kind=dp) :: nrows
 real(kind=dp), intent(in), dimension(nrows,entries+3) :: output
+real(kind=dp),intent(out), dimension(nrows,2) :: hout
 
 !Other
 integer(kind=dp), parameter :: ncol = 7
 real(kind=dp),dimension(nrows) :: m,r,theta,phi, vr,vtheta,vphi
 real(kind=dp),dimension(nrows) :: t,x,y,z, vx,vy,vz
 real(kind=dp), dimension(nrows,ncol) :: I, S1, S2, S3, M1, M2, M3
-real(kind=dp), dimension(nrows,ncol-1) :: IDeriv, S1_Deriv,S2_Deriv, S3_Deriv, M1_Deriv, M2_Deriv,M3_Deriv, SDeriv, MDeriv, hbar
+real(kind=dp), dimension(nrows,ncol-1) :: IDeriv, S1_Deriv,S2_Deriv, S3_Deriv, M1_Deriv, M2_Deriv,M3_Deriv, SDeriv, MDeriv,&
+ hbar,h
+real(kind=dp), dimension(nrows) :: hmag, hxx,hyy,hzz,hxy,hxz,hyz
 integer(kind=dp) :: order,j
 real(kind=dp), parameter :: OBSTheta = 0.0_dp, OBSPhi = 0.0_dp
 real(kind=dp),dimension(3) :: n
@@ -73,6 +76,19 @@ I(:,6) = m0*x*z
 I(:,7) = m0*y*z
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 do j = 1,nrows
 !S tensor
 S1(j,:) = vx(j) * I(j,:) 
@@ -100,14 +116,21 @@ call FiniteDifference(nrows,ncol,S3,S3_Deriv,order)
 
 
 
+do j = 1,5
+print*, S1(j,1), S1_Deriv(j,1), nrows
+enddo
+stop
+
+
+
+
+
 !3rd derivative of M tensor
 order = 3
 call FiniteDifference(nrows,ncol,M1,M1_Deriv,order)
 call FiniteDifference(nrows,ncol,M2,M2_Deriv,order)
 call FiniteDifference(nrows,ncol,M3,M3_Deriv,order)
 
-
-!Determine hplus and hcross
 
 !Observer 'n' vector
 n(1) = sin(OBSTheta)*cos(OBSPhi)
@@ -117,11 +140,80 @@ n(3) = cos(OBSTheta)
 SDeriv = n(1)*S1_Deriv + n(2)*S2_Deriv + n(3)*S3_Deriv 
 MDeriv = n(1)*M1_Deriv + n(2)*M2_Deriv + n(3)*M3_Deriv 
 
-hbar = 2.0_dp*(IDeriv - 2.0_dp*SDeriv + MDeriv)
+!Get hbar
+hbar = 2.0_dp*(IDeriv - 2.0_dp*SDeriv + MDeriv)/OBSR
 
 
 
-  stop
+
+
+
+
+
+
+
+!do j = 1,5
+!print*, IDeriv(j,1), SDeriv(j,1), MDeriv(j,1)
+!enddo
+!stop
+
+
+
+
+
+!And convert to the non-trace reversed version
+do j = 1,nrows
+hmag(j) = hbar(j,1) + hbar(j,2) + hbar(j,3)
+enddo
+
+
+h = hbar
+
+h(:,1) = h(:,1) - 0.50_dp*hmag(:)
+h(:,2) = h(:,2) - 0.50_dp*hmag(:)
+h(:,3) = h(:,3) - 0.50_dp*hmag(:)
+
+
+
+
+
+
+
+
+!Andcalculate hplus andhcross, accounting for the half sign
+
+hxx = h(:,1)
+hyy = h(:,2)
+hzz = h(:,3)
+hxy = h(:,4)
+hxz = h(:,5)
+hyz = h(:,6)
+
+
+
+
+
+hplus = 0.50_dp*(cos(OBSTheta)**2 * hxx - hyy + sin(OBSTheta)*hzz - sin(2.0_dp*OBSTheta)*hxz)
+hcross = cos(OBSTheta)*hxy - sin(OBSTheta)*hyz
+
+
+
+
+!And putput
+hout(:,1) = hplus*OBSR/m0
+hout(:,2) = hcross*OBSR/m0
+
+
+
+do j = 1,5
+print *, j, hplus(j), hplus(j)*OBSR/m0, OBSR/m0
+
+enddo
+
+
+
+
+
 
 end subroutine calc_GW
 
