@@ -179,13 +179,13 @@ errmax = escal * maxval(ratio)
 
 if (errmax .GT. 1.0_dp) then
 !This is not good. Do not update yOUT and reduce the stepsize
-print *,'shrink'
+!print *,'shrink'
 call ShrinkStepsize(errmax)
 yOUT = yIN
 goto 11
 else
 !This is good. Update yOUT and try to increase the stepsize a little bit
-print *, 'grow'
+!print *, 'grow'
 call GrowStepsize(errmax)
 yOUT = ynew
 endif

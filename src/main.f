@@ -76,14 +76,12 @@ Y_init(9:12) = SVector
 
 
 
-print *, Y_init(1:4)
-print *, Y_init(5:8)
-print *, Y_init(9:12)
 h = 0.10_dp*convert_s
 
-print *, h
+
 print *, 'Initial conditions set.'
 print *, 'Starting rk solver'
+print *, 'Approximate Periapsis = ', rp
 call rk(Y_init)
 
 print *, 'Code completed'

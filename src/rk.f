@@ -36,35 +36,48 @@ y  = y0
 
 !Save the first row to array
 i = 1
-AllData(i,1:entries) = y
 
-  
+!WANT
+!AllData(i,1:entries) = y
+!call derivs(y,dy)
+!AllData(i,entries+1: entries+3) = dy(2:4)
+!WANT
+
+
 
 !Integrate
 !do while (y(1) .LT. 1.0_dp)
-!do while ( abs( y(4) - y0(4)) .LT. N_orbit*2.0_dp*PI)    
+do while ( abs( y(4) - y0(4)) .LT. N_orbit*2.0_dp*PI)    
 
 !do while (i .LT. 5)
 
-do while (i .LT. 10)
+!do while (i .LT. 10)
 
    call RKF(y,y1)
     y = y1
  
 
-    print *, i, y(1), h
+  !  print *, i, y(1), h
    
 
    !Also calculate the rdot, thetadot, phidot
    call derivs(y,dy)
 
+
+
     !Save the output
-    i = i + 1
     AllData(i,1:entries) = y
     AllData(i,entries+1: entries+3) = dy(2:4)
-
+    i = i + 1
 
 enddo
+
+
+!WATCH OUT FOR I INDEXING
+
+
+
+
 
 
 
@@ -84,7 +97,7 @@ allocate(waveforms(i,2))
 
 output = AllData(1:i, :)
 
-
+print *, 'start GW calcs'
     call calc_GW(i,output,waveforms)
 
 
@@ -103,7 +116,8 @@ close(10)
 if (plot .EQ. 1) then
 !Save formatted data for plotting
     open(unit=20,file=PlotData,status='replace',form='formatted')
-    do j = 1,i
+    
+    do j = 1,i-1
     if (mod(real(j), coarse) .EQ. 0.0_dp) then
     mm = sqrt(output(j,2)**2 + a**2)
     xC = mm * sin(output(j,3)) * cos(output(j,4))

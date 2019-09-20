@@ -31,10 +31,11 @@ real(kind=dp), dimension(nrows,ncol) :: I, S1, S2, S3, M1, M2, M3
 real(kind=dp), dimension(nrows,ncol-1) :: IDeriv, S1_Deriv,S2_Deriv, S3_Deriv, M1_Deriv, M2_Deriv,M3_Deriv, SDeriv, MDeriv,&
  hbar,h
 real(kind=dp), dimension(nrows) :: hmag, hxx,hyy,hzz,hxy,hxz,hyz
-integer(kind=dp) :: order,j
+integer(kind=dp) :: order,j,ll
 real(kind=dp), parameter :: OBSTheta = 0.0_dp, OBSPhi = 0.0_dp
 real(kind=dp),dimension(3) :: n
 real(kind=dp), dimensiOn(nrows) :: hplus, hcross
+
 
 
 !Load the data into a nice readable form
@@ -46,24 +47,32 @@ vr = output(:,13)
 vtheta = output(:,14)
 vphi = output(:,15)
 
+
+
+
+
+
 !Covert to a cartesian form
 m = sqrt(r**2 + a**2)
 x = m*sin(theta)*cos(phi)
 y = m*sin(theta)*sin(phi)
 z = r*cos(theta)
 
-vx = vr*(r*sin(theta)*cos(phi) / m) &
-    +vtheta*(m*cos(theta)*cos(phi)) &
-    - vphi*(sin(theta)*sin(phi))
+vx = vr*r*sin(theta)*cos(phi) / m &
+    +vtheta*m*cos(theta)*cos(phi) &
+    - m*vphi*sin(theta)*sin(phi) 
 
 
-vy = vr*(r*sin(theta)*sin(phi) / m) &
-    +vtheta*(m*cos(theta)*sin(phi)) &
-    + vphi*(sin(theta)*cos(phi))
+vy = vr*r*sin(theta)*sin(phi) / m &
+    +vtheta*m*cos(theta)*sin(phi) & 
+    + m*vphi*sin(theta)*cos(phi) 
 
 
-vz = vr*(cos(theta)) &
-    -vtheta*(sin(theta)) 
+vz = vr*cos(theta) &
+    -vtheta*r*sin(theta) 
+
+
+
 
 
 !Itensor
@@ -85,29 +94,52 @@ I(:,7) = m0*y*z
 
 
 
-
-
-
+S1 = I
+S2 = I
+S3 = I
+M1 = I
+M2 = I
+M3 = I
 
 do j = 1,nrows
 !S tensor
-S1(j,:) = vx(j) * I(j,:) 
-S2(j,:) = vy(j) * I(j,:) 
-S3(j,:) = vz(j) * I(j,:) 
+S1(j,2:ncol) = vx(j) * I(j,2:ncol) !not the 1st olumn which is time
+S2(j,2:ncol) = vy(j) * I(j,2:ncol) 
+S3(j,2:ncol) = vz(j) * I(j,2:ncol) 
 !M tensor
 
-M1(j,:) = x(j) * I(j,:) 
-M2(j,:) = y(j) * I(j,:) 
-M3(j,:) = z(j) * I(j,:) 
+M1(j,2:ncol) = x(j) * I(j,2:ncol) 
+M2(j,2:ncol) = y(j) * I(j,2:ncol) 
+M3(j,2:ncol) = z(j) * I(j,2:ncol) 
 enddo
 
 !Now calculate the derivatives via a finite difference scheme
 
 
-
 !Second derivative of the inertia tensor
 order = 2
 call FiniteDifference(nrows,ncol,I,IDeriv,order)
+
+
+
+
+
+
+
+
+
+!print *, S2(1,2),vy(1), I(1,2), vy(1)*I(1,2)
+
+
+
+
+
+
+!print *, 'Checks', S2(1,:)
+!stop
+
+
+
 
 !2nd derivatives of the S tensor
 call FiniteDifference(nrows,ncol,S1,S1_Deriv,order)
@@ -116,10 +148,6 @@ call FiniteDifference(nrows,ncol,S3,S3_Deriv,order)
 
 
 
-do j = 1,5
-print*, S1(j,1), S1_Deriv(j,1), nrows
-enddo
-stop
 
 
 
@@ -143,8 +171,8 @@ MDeriv = n(1)*M1_Deriv + n(2)*M2_Deriv + n(3)*M3_Deriv
 !Get hbar
 hbar = 2.0_dp*(IDeriv - 2.0_dp*SDeriv + MDeriv)/OBSR
 
-
-
+!print *, 'Ttot:', OBSR*hbar(1,:)/2.0_Dp
+!stop
 
 
 
@@ -205,10 +233,9 @@ hout(:,2) = hcross*OBSR/m0
 
 
 
-do j = 1,5
-print *, j, hplus(j), hplus(j)*OBSR/m0, OBSR/m0
-
-enddo
+!do j = 1,5
+!print *, j, hplus(j), hplus(j)*OBSR/m0, OBSR/m0
+!enddo
 
 
 
