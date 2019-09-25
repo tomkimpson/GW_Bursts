@@ -26,7 +26,7 @@ real(kind=dp), parameter :: a=0.60_dp !BH spin parameter
 real(kind=dp), parameter :: MPSR = 1.400_dp !pulsar mass in solar masses
 real(kind=dp), parameter :: RPSR = 10.0_dp !pulsar radius in km
 real(kind=dp), parameter :: p0 = 1.0e-3_dp !pulsar spin period in seconds
-real(kind=dp), parameter :: N_orbit = 5.0_dp !Number of orbits to integrate
+real(kind=dp), parameter :: N_orbit = 1.0_dp !Number of orbits to integrate
 real(kind=dp), parameter :: lambda = 1.0_dp !Turn on/off spin-curvature coupling (1 = on)
 
 !For GW calcs

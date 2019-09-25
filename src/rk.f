@@ -123,7 +123,11 @@ if (plot .EQ. 1) then
     xC = mm * sin(output(j,3)) * cos(output(j,4))
     yC = mm * sin(output(j,3)) * sin(output(j,4))
     zC = mm * cos(output(j,3)) 
-    write(20, *) output(j,1), xC, yC, zC, waveforms(j,1), waveforms(j,2)
+    write(20, *) output(j,1)/convert_s, xC, yC, zC, & !t, x, y,z
+                 waveforms(j,1), waveforms(j,2), & !hplus, hcross - normalised
+                 waveforms(j,1)*m0/OBSR, waveforms(j,2)*m0/OBSR, & !hplus, hcross - normalised
+                 output(j,2), m0/OBSR !r, norms
+
     endif
     enddo
     close(20)
