@@ -46,9 +46,20 @@ BinaryData = trim(adjustl(PathOut))//&
              '.dat'
 
 
+if (circular .EQ. 1) then
+
+PlotData = trim(adjustl(PathOut))//&
+             'circular.txt'
+
+else
+
 PlotData = trim(adjustl(PathOut))//&
              trim(adjustl(Fname))//&
              '.txt'
+
+endif
+
+
 
 
 end subroutine setup

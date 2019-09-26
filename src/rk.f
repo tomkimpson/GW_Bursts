@@ -92,6 +92,7 @@ print *, 'Runge Kutta completed. Start data I/O'
 
 
 !First reallocate to create a smaller array
+i = i-1
 allocate(output(i,entries+3))
 allocate(waveforms(i,2))
 
@@ -126,8 +127,8 @@ if (plot .EQ. 1) then
     write(20, *) output(j,1)/convert_s, xC, yC, zC, & !t, x, y,z
                  waveforms(j,1), waveforms(j,2), & !hplus, hcross - normalised
                  waveforms(j,1)*m0/OBSR, waveforms(j,2)*m0/OBSR, & !hplus, hcross - normalised
-                 output(j,2), m0/OBSR !r, norms
-
+                 output(j,2), m0/OBSR,output(j,4), & !r, norms,phi
+                 -4.0_dp*cos(2.0_dp*output(j,4))/output(1,2), -4.0_dp*sin(2.0_dp*output(j,4))/output(1,2) ! circular analytical 
     endif
     enddo
     close(20)

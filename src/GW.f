@@ -179,7 +179,6 @@ hbar = 2.0_dp*(IDeriv - 2.0_dp*SDeriv + MDeriv)/OBSR
 
 
 
-
 !do j = 1,5
 !print*, IDeriv(j,1), SDeriv(j,1), MDeriv(j,1)
 !enddo
@@ -192,6 +191,7 @@ hbar = 2.0_dp*(IDeriv - 2.0_dp*SDeriv + MDeriv)/OBSR
 !And convert to the non-trace reversed version
 do j = 1,nrows
 hmag(j) = hbar(j,1) + hbar(j,2) + hbar(j,3)
+
 enddo
 
 

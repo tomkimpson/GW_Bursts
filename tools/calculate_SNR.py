@@ -22,7 +22,7 @@ ax2 = plt.subplot2grid((1,2), (0,1))
 
 
 
-def process(f):
+def process(f,Tintegration):
     
     #Load the data
     data = np.loadtxt(f)
@@ -47,7 +47,7 @@ def process(f):
     ind = np.argmin(r)
     rmin = r[ind]
     tmin = t[ind]
-    Tobs = 1*24*60*60 # 1 day observation
+    Tobs = Tintegration*24*60*60 # 1 day observation
     ax1.axvline((tmin+Tobs/2), linestyle = '--', c='0.5')
     ax1.axvline((tmin-Tobs/2), linestyle = '--', c='0.5')
 
@@ -137,7 +137,7 @@ def process(f):
     print (hcrossT)
     print ('Got the FT')
 for f in files:
-    process(f)
+    process(f, 10)
 
 
 
