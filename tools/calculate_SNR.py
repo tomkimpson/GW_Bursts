@@ -4,7 +4,7 @@ import numpy as np
 import os
 import glob
 import sys
-
+import scipy.integrate
 
 #Load the data
 path = os.environ["GWDir"]
@@ -76,9 +76,62 @@ def process(f):
     hplusT = dt*np.fft.rfft(hplus) #/ factorW
     hcrossT = dt*np.fft.rfft(hcross) #/ factorW
     
+    #Get rid of zeroth frequencies - WHY?
+    hplusT = hplusT[1:] # get rid of zeroth frequency
+    hcrossT = hcrossT[1:]
+    f = f[1:]
+
+    #Calculate the LISA noise curve
+    Larm = 2.5e9
+    Clight = 3e8
+    fstar = Clight/(2*np.pi*Larm)
+    NC = 2
+
+    alpha = 0.133
+    beta = 243.
+    kappa = 482.
+    gamma = 917.
+    f_knee = 2.58e-3
+
+    A = 1.8e-44/NC
+    Sc = 1. + np.tanh(gamma*(f_knee-f))
+    Sc *=np.exp(-f**alpha + beta*f*np.sin(kappa*f))
+
+    Sc *= A*f**(-7./3.)
+
+
+    #LISA response function
+
+    RFILE = np.loadtxt('noise/ResponseFunction.txt')
+    Rx = RFILE[:,0] * fstar
+    Ry = RFILE[:,1] * NC
+
+    newR = np.interp(f,Rx,Ry)
+    R = newR
+
+
+    #Power Spectral Density
+    P_oms = (1.5e-11)**2 * (1. + (2.0e-3/f)**4)
+    P_acc = (3.0e-15)**2 * (1.+(0.4e-3/f)**2)*(1. + (f/(8.0e-3))**4)
+    Pn = (P_oms + 2.*(1. + np.cos(f/fstar)**2)*P_acc/(2*np.pi*f)**4)/Larm**2
+
+    #Total noise
+    S = Pn/R + Sc
+
+
+
     #The net signal
     hsig = abs(hplusT)**2 + abs(hcrossT)**2
+
+    SNR2 = 4 * scipy.integrate.simps((hsig)/S , f)
+    SNR = np.sqrt(SNR2)
+    print ('The calculated SNR = ', SNR)
+
+
+
+    #some plotting
     ax2.loglog(f,np.sqrt(hsig), C = 'C3')
+    ax2.loglog(f,np.sqrt(S), C = 'C3')
 
 
     print (hcrossT)
