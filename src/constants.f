@@ -71,7 +71,7 @@ real(kind=dp), parameter :: OBSR = observer_distance*pc*convert_m !rg
 
 !Integration constants
 real(kind=dp) :: h =1.0d-1 !Initial stepsize. This will be varied by RKF so it is not a parameter 
-real(kind=dp), parameter :: escal = 1.0d25
+real(kind=dp), parameter :: escal = 1.0d27
 real(kind=dp), parameter :: S = 0.90_dp
 real(kind=dp), parameter :: Pgrow = -0.20_dp
 real(kind=dp), parameter :: Pshrink = -0.250_dp

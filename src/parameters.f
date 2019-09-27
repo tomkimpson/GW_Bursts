@@ -24,7 +24,7 @@ real(kind=dp), parameter :: circular = 1 !Turn on/off a precessing circular orbi
 real(kind=dp), parameter :: eccentricity = 0.90_dp !Orbital eccentricity
 real(kind=dp), parameter :: iota = 15.0_dp !Inclination w.r.t equatorial plane in degrees
 real(kind=dp), parameter :: MBH = 4.310d6 !BH mass in solar masses
-real(kind=dp), parameter :: a=0.60_dp !BH spin parameter
+real(kind=dp), parameter :: a=0.00_dp !BH spin parameter
 real(kind=dp), parameter :: MPSR = 1.400_dp !pulsar mass in solar masses
 real(kind=dp), parameter :: RPSR = 10.0_dp !pulsar radius in km
 real(kind=dp), parameter :: p0 = 1.0e-3_dp !pulsar spin period in seconds
