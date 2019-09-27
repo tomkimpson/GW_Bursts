@@ -118,7 +118,7 @@ if (plot .EQ. 1) then
 !Save formatted data for plotting
     open(unit=20,file=PlotData,status='replace',form='formatted')
     
-    do j = 1,i-1
+    do j = 1,i
     if (mod(real(j), coarse) .EQ. 0.0_dp) then
     mm = sqrt(output(j,2)**2 + a**2)
     xC = mm * sin(output(j,3)) * cos(output(j,4))
@@ -141,6 +141,7 @@ endif
 
 !Closing messages
 print *, 'Data saved to ', trim(adjustl(BinaryData))
+print *, 'Num rows = ', i
 print *, 'Estimated file size is: ', real(i)*real(entries)*real(dp)/1.0d6, ' MB'
 
 

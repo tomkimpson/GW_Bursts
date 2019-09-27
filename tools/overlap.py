@@ -23,7 +23,6 @@ ax2 = plt.subplot2grid((1,2), (0,1))
 
 def FT(t, t1, h,dt):
     hnew = np.interp(t1,t,h)
-    print (hnew)
 
     hT = dt*np.fft.rfft(hnew) #Transposed
 
@@ -51,30 +50,11 @@ def process(f):
 
     fs = 2.0
     dt = 1.0/fs
-    Tobs = 1*24*60*60 # 1 day observation
     t1 = np.arange(t[0], t[-1], dt)
 
-    print (t[0], t[-1])
-    print (t1[0], t1[-1])
-    print (hplus_norm)
-    new = np.interp(t1,t,hplus_norm)
-
-    #t1 = np.arange(t[0],t[-2],dt)
     
-    #new = np.interp(t1, t, hplus_norm)
-    #print (new)
-    #print (t1[0], t1[-1])
-    #print (t[0], t[-1])
-
-
-
-    sys.exit()
-    
-    
-    
-    
-    
-    
+    ax1.plot(t,hplus_analytical,c='r')    
+    ax1.plot(t,hplus_norm,c='b')    
     
     f = np.fft.rfftfreq(t1.size,dt)
     f = f[1:]
@@ -84,18 +64,9 @@ def process(f):
 
     #Fourier transform the numerical and analytical signals
     hplusN = FT(t,t1,hplus_norm,dt)
-    
-    print (hplusN)
-    sys.exit()
-    
     hcrossN = FT(t,t1,hcross_norm,dt)
     hplusA = FT(t,t1,hplus_analytical,dt)
     hcrossA = FT(t,t1,hcross_analytical,dt)
-
-
-
-    print (len(f), len(hplusN))
-
 
 
     hN = np.sqrt(abs(hplusN)**2 + abs(hcrossN)**2) #numerical
@@ -105,7 +76,6 @@ def process(f):
 
 
 
-    sys.exit()
 
 
 

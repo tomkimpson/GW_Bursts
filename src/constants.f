@@ -12,7 +12,6 @@ implicit none
 real(kind=dp), parameter :: Newton_g = 6.67408d-11 
 real(kind=dp), parameter :: Msolar = 1.989d30 
 real(kind=dp), parameter :: mu = Newton_g*MBH*Msolar
-real(kind=dp), parameter :: PI = 4.D0*ATAN(1.D0) 
 real(kind=dp), parameter :: light_c = 3.0d8
 real(kind=dp), parameter :: convert_m = light_c**2/(Newton_g*MBH*Msolar) !Multiply by this to go TO Natural units
 real(kind=dp), parameter :: convert_s = light_c**3/(Newton_g*MBH*Msolar) !Multiply by this to go TO Natural units
@@ -55,7 +54,7 @@ real(kind=dp) :: r_init != rp !initial conditions of particle. Starts at periaps
 
 real(kind=dp), parameter :: theta_min = (90.0_dp - iota) * PI/180.0_dp !Minimum latitude reached in radians
 real(kind=dp), parameter :: theta_init = PI/2.0_dp !initial conditions
-real(kind=dp), parameter :: phi_init = PI !initial conditions
+real(kind=dp), parameter :: phi_init = 0.0_dp !initial conditions
 real(kind=dp), parameter :: t_init = 0.0_dp !initial conditions_
 real(kind=dp), parameter :: zMinus = cos(theta_min)**2.0_dp
 real(kind=dp), parameter :: inertia = 0.40_dp*(MPSR*Msolar)*(RPSR*1.0e3_dp)**2 !SI units
@@ -72,7 +71,7 @@ real(kind=dp), parameter :: OBSR = observer_distance*pc*convert_m !rg
 
 !Integration constants
 real(kind=dp) :: h =1.0d-1 !Initial stepsize. This will be varied by RKF so it is not a parameter 
-real(kind=dp), parameter :: escal = 1.0d20
+real(kind=dp), parameter :: escal = 1.0d25
 real(kind=dp), parameter :: S = 0.90_dp
 real(kind=dp), parameter :: Pgrow = -0.20_dp
 real(kind=dp), parameter :: Pshrink = -0.250_dp

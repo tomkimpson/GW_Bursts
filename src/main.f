@@ -27,7 +27,8 @@ r_init = r_set
 call calculate_EQL_circular(E,Q,L)
 
 else
-r_init = semi_major !rp
+!r_init = semi_major !rp
+r_init = rp
 call calculate_EQL(E,Q,L)
 endif
 

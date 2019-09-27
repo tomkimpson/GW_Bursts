@@ -32,7 +32,6 @@ real(kind=dp), dimension(nrows,ncol-1) :: IDeriv, S1_Deriv,S2_Deriv, S3_Deriv, M
  hbar,h
 real(kind=dp), dimension(nrows) :: hmag, hxx,hyy,hzz,hxy,hxz,hyz
 integer(kind=dp) :: order,j,ll
-real(kind=dp), parameter :: OBSTheta = 0.0_dp, OBSPhi = 0.0_dp
 real(kind=dp),dimension(3) :: n
 real(kind=dp), dimensiOn(nrows) :: hplus, hcross
 
@@ -122,35 +121,10 @@ call FiniteDifference(nrows,ncol,I,IDeriv,order)
 
 
 
-
-
-
-
-
-
-!print *, S2(1,2),vy(1), I(1,2), vy(1)*I(1,2)
-
-
-
-
-
-
-!print *, 'Checks', S2(1,:)
-!stop
-
-
-
-
 !2nd derivatives of the S tensor
 call FiniteDifference(nrows,ncol,S1,S1_Deriv,order)
 call FiniteDifference(nrows,ncol,S2,S2_Deriv,order)
 call FiniteDifference(nrows,ncol,S3,S3_Deriv,order)
-
-
-
-
-
-
 
 
 !3rd derivative of M tensor
@@ -171,44 +145,21 @@ MDeriv = n(1)*M1_Deriv + n(2)*M2_Deriv + n(3)*M3_Deriv
 !Get hbar
 hbar = 2.0_dp*(IDeriv - 2.0_dp*SDeriv + MDeriv)/OBSR
 
-!print *, 'Ttot:', OBSR*hbar(1,:)/2.0_Dp
-!stop
-
-
-
-
-
-
-!do j = 1,5
-!print*, IDeriv(j,1), SDeriv(j,1), MDeriv(j,1)
-!enddo
-!stop
-
-
-
-
 
 !And convert to the non-trace reversed version
 do j = 1,nrows
 hmag(j) = hbar(j,1) + hbar(j,2) + hbar(j,3)
-
 enddo
 
 
 h = hbar
-
 h(:,1) = h(:,1) - 0.50_dp*hmag(:)
 h(:,2) = h(:,2) - 0.50_dp*hmag(:)
 h(:,3) = h(:,3) - 0.50_dp*hmag(:)
 
 
 
-
-
-
-
-
-!Andcalculate hplus andhcross, accounting for the half sign
+!And calculate hplus and hcross, accounting for the half sign
 
 hxx = h(:,1)
 hyy = h(:,2)
@@ -227,15 +178,11 @@ hcross = cos(OBSTheta)*hxy - sin(OBSTheta)*hyz
 
 
 
-!And putput
+!And output. Normalised.
 hout(:,1) = hplus*OBSR/m0
 hout(:,2) = hcross*OBSR/m0
 
 
-
-!do j = 1,5
-!print *, j, hplus(j), hplus(j)*OBSR/m0, OBSR/m0
-!enddo
 
 
 
