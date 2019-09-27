@@ -23,9 +23,15 @@ ax2 = plt.subplot2grid((1,2), (0,1))
 
 
 def process(f,Tintegration):
-    
+ 
+    #ignore the first burst - useful if we start at periapsis
+    length = np.loadtxt(f)
+    length = len(length[:,0])
+
+
     #Load the data
-    data = np.loadtxt(f)
+    data = np.loadtxt(f,skiprows=int(length/4))
+    #data = np.loadtxt(f)
     t = data[:,0]
     hplus_norm = data[:,4]
     hcross_norm = data[:,5]
@@ -52,6 +58,12 @@ def process(f,Tintegration):
     ax1.axvline((tmin-Tobs/2), linestyle = '--', c='0.5')
 
 
+    if (tmin+Tobs/2 > t[-1]):
+        print ('Your time series does not extend that far. Integrate for longer')
+        sys.exit()
+
+
+
     #The data was generated using an adaptive stepsize method
     #Therefore interpolate to get even sampling 
 
@@ -64,7 +76,6 @@ def process(f,Tintegration):
     #if you want to check the interpolation graphiclly:
     #ax1.plot(t1,hplus/N)
     #ax1.plot(t1,hcross/N)
-
 
 
     #Get the frequencies
@@ -134,10 +145,10 @@ def process(f,Tintegration):
     ax2.loglog(f,np.sqrt(S), C = 'C3')
 
 
-    print (hcrossT)
-    print ('Got the FT')
+ #   print (hcrossT)
+  #  print ('Got the FT')
 for f in files:
-    process(f, 10)
+    process(f, 1)
 
 
 

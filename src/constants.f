@@ -54,7 +54,7 @@ real(kind=dp) :: r_init != rp !initial conditions of particle. Starts at periaps
 
 real(kind=dp), parameter :: theta_min = (90.0_dp - iota) * PI/180.0_dp !Minimum latitude reached in radians
 real(kind=dp), parameter :: theta_init = PI/2.0_dp !initial conditions
-real(kind=dp), parameter :: phi_init = 0.0_dp !initial conditions
+real(kind=dp), parameter :: phi_init = PI !0.0_dp !initial conditions
 real(kind=dp), parameter :: t_init = 0.0_dp !initial conditions_
 real(kind=dp), parameter :: zMinus = cos(theta_min)**2.0_dp
 real(kind=dp), parameter :: inertia = 0.40_dp*(MPSR*Msolar)*(RPSR*1.0e3_dp)**2 !SI units
@@ -71,7 +71,7 @@ real(kind=dp), parameter :: OBSR = observer_distance*pc*convert_m !rg
 
 !Integration constants
 real(kind=dp) :: h =1.0d-1 !Initial stepsize. This will be varied by RKF so it is not a parameter 
-real(kind=dp), parameter :: escal = 1.0d27
+real(kind=dp), parameter :: escal = 1.0d20
 real(kind=dp), parameter :: S = 0.90_dp
 real(kind=dp), parameter :: Pgrow = -0.20_dp
 real(kind=dp), parameter :: Pshrink = -0.250_dp
