@@ -82,7 +82,11 @@ h = 0.10_dp*convert_s
 
 print *, 'Initial conditions set.'
 print *, 'Starting rk solver'
+print *, 'Approx sma = ', semi_major
 print *, 'Approximate Periapsis = ', rp
+
+print *, 'Inclination i = TBC'
+
 call rk(Y_init)
 
 print *, 'Code completed'

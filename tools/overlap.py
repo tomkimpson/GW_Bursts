@@ -45,8 +45,15 @@ def process(f):
     N = data[0,9]
     phi = data[:,10]
 
-    hplus_analytical = - 4/r[0] * np.cos(2*phi)
-    hcross_analytical = - 4/r[0] * np.sin(2*phi)
+
+    obstheta = np.pi/4.0
+    hplus_analytical = -2/r[0] *(1+np.cos(obstheta)) * np.cos(2*phi)
+    hcross_analytical = -4/r[0] *np.cos(obstheta) * np.sin(2*phi)
+
+
+
+    #hplus_analytical = - 4/r[0] * np.cos(2*phi)
+    #hcross_analytical = - 4/r[0] * np.sin(2*phi)
 
     fs = 2.0
     dt = 1.0/fs
@@ -56,6 +63,11 @@ def process(f):
     ax1.plot(t,hplus_analytical,c='r')    
     ax1.plot(t,hplus_norm,c='b')    
     
+
+   # ax1.plot(t,hcross_analytical,c='r')    
+   # ax1.plot(t,hcross_norm,c='b')    
+
+
     f = np.fft.rfftfreq(t1.size,dt)
     f = f[1:]
 

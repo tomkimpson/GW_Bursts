@@ -57,6 +57,7 @@ do while ( abs( y(4) - y0(4)) .LT. N_orbit*2.0_dp*PI)
     y = y1
  
 
+!print *,  abs( y(4) - y0(4)),  N_orbit*2.0_dp*PI
   !  print *, i, y(1), h
    
 

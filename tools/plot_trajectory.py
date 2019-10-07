@@ -9,6 +9,16 @@ import os
 
 
 
+#Observer location
+OBSTheta = np.pi/2
+OBSPhi = 0
+r0 = 1000
+x0 = r0*np.sin(OBSTheta)*np.cos(OBSPhi)
+y0 = r0*np.sin(OBSTheta)*np.sin(OBSPhi)
+z0 = r0*np.cos(OBSTheta)
+xx = [0,x0]
+yy = [0,y0]
+zz = [0,z0]
 
 
 d = 3
@@ -18,6 +28,7 @@ d = 3
 if (d == 3):
     fig = plt.figure(figsize=(10,10))
     ax1 = plt.subplot2grid((1,1), (0,0),projection='3d')
+    ax1.plot(xx,yy,zz,c='k', linestyle='--')
 elif  (d == 2):
     fig = plt.figure(figsize=(20,10))
     ax1 = plt.subplot2grid((1,2), (0,0))
