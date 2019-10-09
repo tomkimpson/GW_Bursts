@@ -50,13 +50,19 @@ def process(f,Tintegration):
     rmin = r[ind]
     tmin = t[ind]
     Tobs = Tintegration*24*60*60 # 1 day observation
-    ax1.axvline((tmin+Tobs/2), linestyle = '--', c='0.5')
-    ax1.axvline((tmin-Tobs/2), linestyle = '--', c='0.5')
+    
+    
+    
 
+    #Convert to days and plot some stuff
     tplot = t - tmin
+    tplot = tplot/(60*60*24)
+    tplot_mid = tmin / (60*60*24)
 
-
-
+    ax1.plot(tplot,hplus_norm)
+    ax1.plot(tplot,hcross_norm)
+    ax1.axvline((Tintegration/2), linestyle = '--', c='0.5')
+    ax1.axvline((-Tintegration/2), linestyle = '--', c='0.5')
 
     if (tmin+Tobs/2 > t[-1]):
         print ('Your time series does not extend that far. Integrate for longer')
@@ -142,13 +148,31 @@ def process(f,Tintegration):
 
     #some plotting
     ax2.loglog(f,np.sqrt(hsig), C = 'C3')
-    ax2.loglog(f,np.sqrt(S), C = 'C3')
+    ax2.loglog(f,np.sqrt(S), C = 'C2')
 
 
- #   print (hcrossT)
-  #  print ('Got the FT')
-process(datafile, 1)
 
+Tint = 1
+process(datafile, Tint)
+#Make it pretty
+
+#Make it pretty
+fs = 20
+#AX1
+ax1.set_xlabel('t [days]', fontsize = fs)
+ax1.set_ylabel(r'$h_{+, \times} (r/\mu)$', fontsize = fs)
+ax1.locator_params(axis='both', nbins=5)
+ax1.tick_params(axis='both', which='major', labelsize=fs-4)
+ax1.set_xlim(-5*Tint, +5*Tint)
+
+#AX2
+ax2.set_xlabel('f [Hz]', fontsize = fs)
+ax2.set_ylabel(r'$\tilde{h}(f)$ [Hz]$^{-1}$', fontsize = fs)
+ax2.tick_params(axis='both', which='major', labelsize=fs-4)
+#ax1.set_xlim(-5*Tint, +5*Tint)
+
+
+#AND SAVE BOTH FIGURES
 
 
 
