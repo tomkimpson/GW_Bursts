@@ -13,24 +13,18 @@ datafile = path+'ForPaper/FigMW_example.txt'
 #Set up plotting environment
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
-fig = plt.figure(figsize=(20,10))
-ax1 = plt.subplot2grid((1,2), (0,0))
-ax2 = plt.subplot2grid((1,2), (0,1))
+fig = plt.figure(figsize=(10,10))
+ax1 = plt.subplot2grid((1,1), (0,0))
 
 
+#Load the data once
+#ignore the first burst - useful if we start at periapsis
+length = np.loadtxt(datafile)
+length = len(length[:,0])
+data = np.loadtxt(datafile,skiprows=int(length/4))
 
 
-
-def process(f,Tintegration):
- 
-    #ignore the first burst - useful if we start at periapsis
-    length = np.loadtxt(f)
-    length = len(length[:,0])
-
-
-    #Load the data
-    data = np.loadtxt(f,skiprows=int(length/4))
-    #data = np.loadtxt(f)
+def process(data,Tintegration):
     t = data[:,0]
     hplus_norm = data[:,4]
     hcross_norm = data[:,5]
@@ -38,10 +32,6 @@ def process(f,Tintegration):
     hcross = data[:,7]
     r = data[:,8]
     N = data[0,9]
-
-    #plot the waveform
- #   ax1.plot(t, hplus_norm)
- #   ax1.plot(t, hcross_norm)
 
     #Only select some of the data
     #that within a certain limit of periapsis
@@ -51,19 +41,6 @@ def process(f,Tintegration):
     tmin = t[ind]
     Tobs = Tintegration*24*60*60 # 1 day observation
     
-    
-    
-
-    #Convert to days and plot some stuff
-    tplot = t - tmin
-    tplot = tplot/(60*60*24)
-    tplot_mid = tmin / (60*60*24)
-
-    ax1.plot(tplot,hplus_norm)
-    ax1.plot(tplot,hcross_norm)
-    ax1.axvline((Tintegration/2), linestyle = '--', c='0.5')
-    ax1.axvline((-Tintegration/2), linestyle = '--', c='0.5')
-
     if (tmin+Tobs/2 > t[-1]):
         print ('Your time series does not extend that far. Integrate for longer')
         sys.exit()
@@ -79,20 +56,29 @@ def process(f,Tintegration):
     hplus = np.interp(t1,t,hplus)
     hcross= np.interp(t1,t,hcross)
 
+
+    #ax1.plot(t1,hcross)
+    #return
+
+
+
     #if you want to check the interpolation graphiclly:
     #ax1.plot(t1,hplus/N)
     #ax1.plot(t1,hcross/N)
 
-
+    print (hplus[0], hplus[-1])
     #Get the frequencies
     f = np.fft.rfftfreq(hplus.size, dt)
     df = f[1] - f[0] #arethe frequencies evelyspaces?
-    print ('LENGTHS:', len(hplus))
 
+
+    print ('DO an FT', Tintegration)
     #Calculate the FT
     hplusT = dt*np.fft.rfft(hplus) #/ factorW
     hcrossT = dt*np.fft.rfft(hcross) #/ factorW
-    
+    print ('Completed')
+
+
     #Get rid of zeroth frequencies - WHY?
     hplusT = hplusT[1:] # get rid of zeroth frequency
     hcrossT = hcrossT[1:]
@@ -142,38 +128,37 @@ def process(f,Tintegration):
 
     SNR2 = 4 * scipy.integrate.simps((hsig)/S , f)
     SNR = np.sqrt(SNR2)
-    print ('The calculated SNR = ', SNR)
+    print ('Output = ',Tintegration, SNR,len(hplus))
+
+    return SNR
 
 
 
-    #some plotting
-    ax2.loglog(f,np.sqrt(hsig), C = 'C3')
-    ax2.loglog(f,np.sqrt(S), C = 'C2')
+
+Trange = np.arange(0.1,10,0.1)
+xx = []
+yy = []
+for Tint in Trange:
+    SNR = process(data,Tint)
+    xx.extend([Tint])
+    yy.extend([SNR])
 
 
 
-Tint = 1
-process(datafile, Tint)
-#Make it pretty
+ax1.plot(xx,yy)
+ax1.scatter(xx,yy)
 
 #Make it pretty
 fs = 20
 #AX1
 ax1.set_xlabel('t [days]', fontsize = fs)
-ax1.set_ylabel(r'$h_{+, \times} (r/\mu)$', fontsize = fs)
+ax1.set_ylabel('SNR', fontsize = fs)
 ax1.locator_params(axis='both', nbins=5)
 ax1.tick_params(axis='both', which='major', labelsize=fs-4)
-ax1.set_xlim(-5*Tint, +5*Tint)
-
-#AX2
-ax2.set_xlabel('f [Hz]', fontsize = fs)
-ax2.set_ylabel(r'$\tilde{h}(f)$ [Hz]$^{-1}$', fontsize = fs)
-ax2.tick_params(axis='both', which='major', labelsize=fs-4)
-#ax1.set_xlim(-5*Tint, +5*Tint)
-
-
-#AND SAVE BOTH FIGURES
 
 
 
-plt.show()    
+
+savepath = '/Users/tomkimpson/Dropbox/MSSL/Papers/PaperNGW_burst/figures/'
+plt.savefig(savepath+'SNR_vs_Tobs.png', dpi=300)
+plt.show()
