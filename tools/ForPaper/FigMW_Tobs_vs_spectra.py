@@ -29,7 +29,7 @@ data = np.loadtxt(datafile,skiprows=int(length/4))
 
 
 
-def process(data,Tintegration):
+def process(data,Tintegration,color):
     t = data[:,0]
     hplus_norm = data[:,4]
     hcross_norm = data[:,5]
@@ -62,25 +62,11 @@ def process(data,Tintegration):
     hcross= np.interp(t1,t,hcross)
 
 
-    print (1 / (Tintegration*24*3600))
 
-
-    #ax1.plot(t1,hcross)
-    #return
-
-
-
-    #if you want to check the interpolation graphiclly:
-    #ax1.plot(t1,hplus/N)
-    #ax1.plot(t1,hcross/N)
-
-    print (hplus[0], hplus[-1])
     #Get the frequencies
     f = np.fft.rfftfreq(hplus.size, dt)
     df = f[1] - f[0] #arethe frequencies evelyspaces?
 
-    print (f[0], f[-1])
-    sys.exit()
 
     print ('DO an FT', Tintegration)
     #Calculate the FT
@@ -119,6 +105,14 @@ def process(data,Tintegration):
     Rx = RFILE[:,0] * fstar
     Ry = RFILE[:,1] * NC
 
+
+
+
+
+
+
+
+
     newR = np.interp(f,Rx,Ry)
     R = newR
 
@@ -136,13 +130,21 @@ def process(data,Tintegration):
     #The net signal
     hsig = abs(hplusT)**2 + abs(hcrossT)**2
 
+    
+    #skip green in plotting
+    if color == 2:
+        color=color+1    
+    
+    
+    plotC = 'C'+str(color)
+    print (plotC)
+
+    ax1.loglog(f,np.sqrt(hsig),C =plotC, label = Tintegration)
+    ax1.loglog(f,np.sqrt(S), C = 'C2')
 
 
-    #ax1.loglog(f,np.sqrt(hsig), label = Tintegration)
-    #ax1.loglog(f,np.sqrt(S), C = 'C5')
-
-
-    ax1.loglog(f,hsig/S, label= Tintegration)
+   # ax1.loglog(f,hsig/S, label= Tintegration)
+    #ax1.loglog(Rx,Ry, label= Tintegration)
 
 
     SNR2 = 4 * scipy.integrate.simps((hsig)/S , f)
@@ -155,10 +157,13 @@ def process(data,Tintegration):
 
 
 Trange = [0.5,1,10]
-Trange = [10]
-for Tint in Trange:
-    SNR = process(data,Tint)
 
+Trange = [0.2, 2.1,9.0]
+
+index = 0
+for Tint in Trange:
+    SNR = process(data,Tint,index)
+    index = index + 1
 
 
 #AX1
@@ -166,7 +171,17 @@ fs=20
 ax1.set_xlabel('f [Hz]', fontsize = fs)
 ax1.set_ylabel(r'$\tilde{h}(f)$ [Hz]$^{-1}$', fontsize = fs)
 ax1.tick_params(axis='both', which='major', labelsize=fs-4)
-ax1.legend()
+#ax1.legend()
+
+
+
+savepath = '/Users/tomkimpson/Dropbox/MSSL/Papers/PaperNGW_burst/figures/'
+
+plt.savefig(savepath+'MW_SpectraCompare', dpi=300)
+
+
+
+
 plt.show()
 
 

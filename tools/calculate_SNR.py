@@ -148,7 +148,7 @@ def process(f,Tintegration):
  #   print (hcrossT)
   #  print ('Got the FT')
 for f in files:
-    process(f, 1)
+    process(f, 0.05)
 
 
 

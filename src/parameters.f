@@ -16,13 +16,13 @@ real(kind=dp), parameter :: PI = 4.D0*ATAN(1.D0)
 
 !The semi-major axis of the orbit can be defined either directly, or related to the period via Keplers 3rd
 
-real(kind=dp), parameter :: KeplerianPeriod = 0.100000_dp
+real(kind=dp), parameter :: KeplerianPeriod = 0.050000_dp
 real(kind=dp), parameter :: r_set = 6.0_dp !Set the sma. Only used if KepPer eq 0
 
 real(kind=dp), parameter :: circular = 0 !Turn on/off a precessing circular orbit. If on subsequent parameters are ignored
 
 real(kind=dp), parameter :: eccentricity = 0.90_dp !Orbital eccentricity
-real(kind=dp), parameter :: iota = 30.0_dp !Inclination w.r.t equatorial plane in degrees
+real(kind=dp), parameter :: iota = 45.0_dp !Inclination w.r.t equatorial plane in degrees
 real(kind=dp), parameter :: MBH = 4.310d6 !BH mass in solar masses
 real(kind=dp), parameter :: a=0.60_dp !BH spin parameter
 real(kind=dp), parameter :: MPSR = 1.400_dp !pulsar mass in solar masses
@@ -32,8 +32,8 @@ real(kind=dp), parameter :: N_orbit = 1.5000_dp !Number of orbits to integrate
 real(kind=dp), parameter :: lambda = 1.0_dp !Turn on/off spin-curvature coupling (1 = on)
 
 !For GW calcs
-real(kind=dp), parameter :: observer_distance = 8.330d3 !parsecs
-real(kind=dp), parameter :: OBSTheta = PI/2.0_dp, OBSPhi = 0.0_dp
+real(kind=dp), parameter :: observer_distance = 763d3 !parsecs
+real(kind=dp), parameter :: OBSTheta = 0.0_dp, OBSPhi = 0.0_dp
 
 !Format parameters
 integer(kind=dp), parameter :: plot = 1 !Turn on/off saving a formatted file for plotting with e.g. python

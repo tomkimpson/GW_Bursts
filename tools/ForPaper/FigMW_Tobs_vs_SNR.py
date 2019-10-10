@@ -160,5 +160,5 @@ ax1.tick_params(axis='both', which='major', labelsize=fs-4)
 
 
 savepath = '/Users/tomkimpson/Dropbox/MSSL/Papers/PaperNGW_burst/figures/'
-plt.savefig(savepath+'SNR_vs_Tobs.png', dpi=300)
+#plt.savefig(savepath+'SNR_vs_Tobs.png', dpi=300)
 plt.show()
