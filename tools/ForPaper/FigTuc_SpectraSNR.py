@@ -8,23 +8,30 @@ import scipy.integrate
 
 #Load the data
 path = os.environ["GWDir"]
-datafile = path+'ForPaper/FigMW_example.txt'
+#datafile = path+'ForPaper/FigTuc_example_Theta0.txt'
+datafile = path+'ForPaper/FigTuc_example_ThetaEq.txt'
 
 #Set up plotting environment
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
-fig = plt.figure(figsize=(10,10))
-ax1 = plt.subplot2grid((1,1), (0,0))
+fig = plt.figure(figsize=(20,10))
+ax1 = plt.subplot2grid((1,2), (0,0))
+ax2 = plt.subplot2grid((1,2), (0,1))
 
 
-#Load the data once
-#ignore the first burst - useful if we start at periapsis
-length = np.loadtxt(datafile)
-length = len(length[:,0])
-data = np.loadtxt(datafile,skiprows=int(length/4))
 
 
-def process(data,Tintegration):
+
+def process(f,Tintegration):
+ 
+    #ignore the first burst - useful if we start at periapsis
+    length = np.loadtxt(f)
+    length = len(length[:,0])
+
+
+    #Load the data
+    data = np.loadtxt(f,skiprows=int(length/4))
+    #data = np.loadtxt(f)
     t = data[:,0]
     hplus_norm = data[:,4]
     hcross_norm = data[:,5]
@@ -32,6 +39,10 @@ def process(data,Tintegration):
     hcross = data[:,7]
     r = data[:,8]
     N = data[0,9]
+
+    #plot the waveform
+ #   ax1.plot(t, hplus_norm)
+ #   ax1.plot(t, hcross_norm)
 
     #Only select some of the data
     #that within a certain limit of periapsis
@@ -41,6 +52,19 @@ def process(data,Tintegration):
     tmin = t[ind]
     Tobs = Tintegration*24*60*60 # 1 day observation
     
+    
+    
+
+    #Convert to days and plot some stuff
+    tplot = t - tmin
+    tplot = tplot/(60*60*24)
+    tplot_mid = tmin / (60*60*24)
+
+    ax1.plot(tplot,hplus_norm)
+    ax1.plot(tplot,hcross_norm)
+    ax1.axvline((Tintegration/2), linestyle = '--', c='0.5')
+    ax1.axvline((-Tintegration/2), linestyle = '--', c='0.5')
+
     if (tmin+Tobs/2 > t[-1]):
         print ('Your time series does not extend that far. Integrate for longer')
         sys.exit()
@@ -50,45 +74,59 @@ def process(data,Tintegration):
     #The data was generated using an adaptive stepsize method
     #Therefore interpolate to get even sampling 
 
-    fs = 2.0 #sampling frequency
+    fs = 2**4 #sampling frequency
     dt = 1/fs
     t1 = np.arange(tmin-Tobs/2, tmin+Tobs/2, dt)
     hplus = np.interp(t1,t,hplus)
     hcross= np.interp(t1,t,hcross)
 
-
-    #ax1.plot(t1,hcross)
-    #return
-
-
-
     #if you want to check the interpolation graphiclly:
     #ax1.plot(t1,hplus/N)
     #ax1.plot(t1,hcross/N)
 
-    print (hplus[0], hplus[-1])
+
     #Get the frequencies
     f = np.fft.rfftfreq(hplus.size, dt)
     df = f[1] - f[0] #arethe frequencies evelyspaces?
+    print ('LENGTHS:', len(hplus))
 
-
-    print ('DO an FT', Tintegration)
     #Calculate the FT
     hplusT = dt*np.fft.rfft(hplus) #/ factorW
     hcrossT = dt*np.fft.rfft(hcross) #/ factorW
-    print ('Completed')
-
-
+    
     #Get rid of zeroth frequencies - WHY?
     hplusT = hplusT[1:] # get rid of zeroth frequency
     hcrossT = hcrossT[1:]
     f = f[1:]
+
+
 
     #Calculate the LISA noise curve
     Larm = 2.5e9
     Clight = 3e8
     fstar = Clight/(2*np.pi*Larm)
     NC = 2
+
+    #LISA response function
+    RFILE = np.loadtxt('../noise/ResponseFunction.txt')
+    Rx = RFILE[:,0] * fstar
+    Ry = RFILE[:,1] * NC
+
+
+
+    hplusT_temp = []
+    hcrossT_temp = []
+    f_temp = []
+    for i in range(len(f)):
+        if f[i] <= Rx[-1]:
+            hplusT_temp.extend([hplusT[i]])    
+            hcrossT_temp.extend([hcrossT[i]])    
+            f_temp.extend([f[i]])    
+        
+    hplusT = np.array(hplusT_temp)
+    hcrossT = np.array(hcrossT_temp)
+    f = np.array(f_temp)
+
 
     alpha = 0.133
     beta = 243.
@@ -103,11 +141,6 @@ def process(data,Tintegration):
     Sc *= A*f**(-7./3.)
 
 
-    #LISA response function
-
-    RFILE = np.loadtxt('../noise/ResponseFunction.txt')
-    Rx = RFILE[:,0] * fstar
-    Ry = RFILE[:,1] * NC
 
     newR = np.interp(f,Rx,Ry)
     R = newR
@@ -128,37 +161,50 @@ def process(data,Tintegration):
 
     SNR2 = 4 * scipy.integrate.simps((hsig)/S , f)
     SNR = np.sqrt(SNR2)
-    print ('Output = ',Tintegration, SNR,len(hplus))
-
-    return SNR
+    print ('The calculated SNR = ', SNR)
 
 
 
-
-Trange = np.arange(0.1,10,0.1)
-xx = []
-yy = []
-for Tint in Trange:
-    SNR = process(data,Tint)
-    xx.extend([Tint])
-    yy.extend([SNR])
+    #some plotting
+    ax2.loglog(f,np.sqrt(hsig), C = 'C3')
+    ax2.loglog(f,np.sqrt(S), C = 'C2')
 
 
 
-ax1.plot(xx,yy)
-ax1.scatter(xx,yy)
+Tint = 0.001
+process(datafile, Tint)
+#Make it pretty
 
 #Make it pretty
 fs = 20
 #AX1
-ax1.set_xlabel(r'$T_{\rm obs}$ [days]', fontsize = fs)
-ax1.set_ylabel('SNR', fontsize = fs)
+ax1.set_xlabel('t [days]', fontsize = fs)
+ax1.set_ylabel(r'$h_{+, \times} (r/\mu)$', fontsize = fs)
 ax1.locator_params(axis='both', nbins=5)
 ax1.tick_params(axis='both', which='major', labelsize=fs-4)
+ax1.set_xlim(-5*Tint, +5*Tint)
+
+#AX2
+ax2.set_xlabel('f [Hz]', fontsize = fs)
+ax2.set_ylabel(r'$\tilde{h}(f)$ [Hz]$^{-1}$', fontsize = fs)
+ax2.tick_params(axis='both', which='major', labelsize=fs-4)
+#ax1.set_xlim(-5*Tint, +5*Tint)
 
 
 
 
+#AND SAVE BOTH FIGURES individually
 savepath = '/Users/tomkimpson/Dropbox/MSSL/Papers/PaperNGW_burst/figures/'
-plt.savefig(savepath+'SNR_vs_Tobs.png', dpi=300)
-plt.show()
+
+bbox = ax1.get_tightbbox(fig.canvas.get_renderer())
+extent = bbox.transformed(fig.dpi_scale_trans.inverted())
+plt.savefig(savepath+'TUC_Waveform_ThetaEq'.format(ax1),bbox_inches=extent.expanded(1.1,1))
+
+
+
+bbox = ax2.get_tightbbox(fig.canvas.get_renderer())
+extent = bbox.transformed(fig.dpi_scale_trans.inverted())
+plt.savefig(savepath+'TUC_Spectra_ThetaEq'.format(ax2),bbox_inches=extent.expanded(1.1,1))
+
+
+plt.show()    

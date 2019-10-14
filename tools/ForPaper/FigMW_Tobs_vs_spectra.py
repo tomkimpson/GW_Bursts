@@ -171,13 +171,13 @@ fs=20
 ax1.set_xlabel('f [Hz]', fontsize = fs)
 ax1.set_ylabel(r'$\tilde{h}(f)$ [Hz]$^{-1}$', fontsize = fs)
 ax1.tick_params(axis='both', which='major', labelsize=fs-4)
-#ax1.legend()
+ax1.legend()
 
 
 
 savepath = '/Users/tomkimpson/Dropbox/MSSL/Papers/PaperNGW_burst/figures/'
 
-plt.savefig(savepath+'MW_SpectraCompare', dpi=300)
+#plt.savefig(savepath+'MW_SpectraCompare', dpi=300)
 
 
 
