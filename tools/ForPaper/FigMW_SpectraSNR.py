@@ -79,6 +79,17 @@ def process(f,Tintegration):
     hplus = np.interp(t1,t,hplus)
     hcross= np.interp(t1,t,hcross)
 
+
+
+
+
+
+
+
+
+
+
+
     #if you want to check the interpolation graphiclly:
     #ax1.plot(t1,hplus/N)
     #ax1.plot(t1,hcross/N)
@@ -92,7 +103,22 @@ def process(f,Tintegration):
     #Calculate the FT
     hplusT = dt*np.fft.rfft(hplus) #/ factorW
     hcrossT = dt*np.fft.rfft(hcross) #/ factorW
-    
+ 
+
+
+
+
+    #Windowing?
+ #   hplusT = hplusT * Tintegration*np.sinc(np.pi*f*Tintegration)
+ #   hcrossT = hcrossT * Tintegration*np.sinc(np.pi*f*Tintegration)
+
+
+
+
+
+
+
+
     #Get rid of zeroth frequencies - WHY?
     hplusT = hplusT[1:] # get rid of zeroth frequency
     hcrossT = hcrossT[1:]

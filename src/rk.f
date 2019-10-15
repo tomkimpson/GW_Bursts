@@ -129,7 +129,8 @@ if (plot .EQ. 1) then
                  waveforms(j,1), waveforms(j,2), & !hplus, hcross - normalised
                  waveforms(j,1)*m0/OBSR, waveforms(j,2)*m0/OBSR, & !hplus, hcross - normalised
                  output(j,2), m0/OBSR,output(j,4), & !r, norms,phi
-                 -4.0_dp*cos(2.0_dp*output(j,4))/output(1,2), -4.0_dp*sin(2.0_dp*output(j,4))/output(1,2) ! circular analytical 
+                 -4.0_dp*cos(2.0_dp*output(j,4))/output(1,2), -4.0_dp*sin(2.0_dp*output(j,4))/output(1,2), &
+                iota ! circular analytical 
     endif
     enddo
     close(20)
