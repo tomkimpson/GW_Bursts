@@ -1,7 +1,7 @@
 
 # Gravitational Burst Radiation from pulsars around massive BHs
 
-This code calculates the waveforms and SNRs of gravitationa burst radiation from a pulsar orbiting a massive BH. We use a [numerical kludge method](https://journals.aps.org/prd/abstract/10.1103/PhysRevD.75.024005) where the relativistic spin-orbital dynamics are specified by the Mathsisson Papetrou Dixon formulation (see the [SpinCurvature git repo](https://github.com/tomkimpson/SpinCurvatureDynamics)). 
+This code calculates the waveforms and SNRs of gravitational burst radiation from a pulsar orbiting a massive BH. We use a [numerical kludge method](https://journals.aps.org/prd/abstract/10.1103/PhysRevD.75.024005) where the relativistic spin-orbital dynamics are specified by the Mathsisson Papetrou Dixon formulation (see the [SpinCurvature git repo](https://github.com/tomkimpson/SpinCurvatureDynamics)). 
 
 The orbital motion is calculated by solving a set of coupled ODEs numerically and then the waveforms can be calculated. With the wavefroms constructed we can then also determine the Signal to Noise ratio, using the noise models as described in [Robson 2018](https://arxiv.org/abs/1803.01944).
 
