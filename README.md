@@ -3,7 +3,7 @@
 
 This code calculates the waveforms and SNRs of gravitational burst radiation from a pulsar orbiting a massive BH. We use a [numerical kludge method](https://journals.aps.org/prd/abstract/10.1103/PhysRevD.75.024005) where the relativistic spin-orbital dynamics are specified by the Mathsisson Papetrou Dixon formulation (see the [SpinCurvature git repo](https://github.com/tomkimpson/SpinCurvatureDynamics)). 
 
-The orbital motion is calculated by solving a set of coupled ODEs numerically and then the waveforms can be calculated. With the wavefroms constructed we can then also determine the Signal to Noise ratio, using the noise models as described in [Robson 2018](https://arxiv.org/abs/1803.01944).
+The orbital motion is calculated by solving a set of coupled ODEs numerically and then the waveforms can be calculated. With the waveforms constructed we can then also determine the SNR, using the noise models as described in [Robson 2018](https://arxiv.org/abs/1803.01944).
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
@@ -29,7 +29,7 @@ source ~/.bash_profile
 ```
 Just change the path to some appropriate local destination
 
-You can check the environemnt variable has been added to `bash_profile` by either `env` or `vim ~/.bashprofile`
+You can check the environment variable has been added to `bash_profile` by either `env` or `vim ~/.bashprofile`
 
 Set this to point to a local direcory.
 
@@ -39,7 +39,7 @@ The code should then run as is, out of the box. Try
 run.py
 ```
 
-to compile and run the code. Once you have checked that everything is running OK, you can then start playing. The code structure (mdoules, subroutines etc.) is outlined below.
+to compile and run the code. Once you have checked that everything is running OK, you can then start playing. The code structure (modules, subroutines etc.) is outlined below.
 
 
 If making edits to the code, try to keep to the [FORTRAN Style Guide](https://www.fortran90.org/src/best-practices.html)
